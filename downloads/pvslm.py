@@ -1,5 +1,9 @@
 import argparse
 
+PVSLM=?
+PVSLMSRC=?
+PVSLMREP=?
+
 def main():
 	
 	parser = argparse.ArgumentParser(version='PVS Library Manager 1.0',prog='PVS Library Manager')
