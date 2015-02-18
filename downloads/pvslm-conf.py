@@ -24,6 +24,9 @@ srcPath=pathAssing('source')
 repoPath=pathAssing('repository')
 confPath=pathAssing('configuration')
 
+copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/pvslm.py -o pvslm',shell=True)
+print copy.communicate("n\n")[0]
+
 for i in range (0,2):
 	replace=subprocess.Popen('sed -e "s,^PVSLM=.*$,PVSLM='+confPath+'," < pvslm > tmp.9996',shell=True)
 	output=subprocess.Popen('mv tmp.9996 pvslm',shell=True)
