@@ -28,13 +28,13 @@ copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/pvslm.py 
 print copy.communicate("n\n")[0]
 
 for i in range (0,2):
-	replace=subprocess.Popen('sed -e "s,^PVSLM=.*$,PVSLM='+confPath+'," < pvslm > tmp.9996',shell=True)
+	replace=subprocess.Popen('sed -e "s,^PVSLM=.*$,PVSLM='+confPath+'," < pvslm.py > tmp.9996',shell=True)
 	output=subprocess.Popen('mv tmp.9996 pvslm',shell=True)
 
-	replace=subprocess.Popen('sed -e "s,^PVSLMREP=.*$,PVSLMREP='+repoPath+'," < pvslm > tmp.9998',shell=True)
+	replace=subprocess.Popen('sed -e "s,^PVSLMREP=.*$,PVSLMREP='+repoPath+'," < pvslm.py > tmp.9998',shell=True)
 	output=subprocess.Popen('mv tmp.9998 pvslm',shell=True)
 
-	replace=subprocess.Popen('sed -e "s,^PVSLMSRC=.*$,PVSLMSRC='+srcPath+'," < pvslm > tmp.9997',shell=True)
+	replace=subprocess.Popen('sed -e "s,^PVSLMSRC=.*$,PVSLMSRC='+srcPath+'," < pvslm.py > tmp.9997',shell=True)
 	output=subprocess.Popen('mv tmp.9997 pvslm',shell=True)
 
 copy=subprocess.Popen('sudo cp -r pvslm '+confPath,shell=True)
