@@ -24,7 +24,7 @@ srcPath=pathAssing('source')
 repoPath=pathAssing('repository')
 confPath=pathAssing('configuration')
 
-copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/pvslm.py -o pvslm',shell=True)
+copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/pvslm.py -o pvslm.py',shell=True)
 print copy.communicate("n\n")[0]
 
 for i in range (0,2):
