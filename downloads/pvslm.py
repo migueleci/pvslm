@@ -1,8 +1,8 @@
 import argparse
 
-PVSLM='?'
-PVSLMSRC='?'
-PVSLMREP='?'
+PVSLM='pvslmPath'
+PVSLMSRC='pvslmSrc'
+PVSLMREP='pvslmRep'
 
 def main():
 	
