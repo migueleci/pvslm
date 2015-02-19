@@ -6,9 +6,9 @@ import subprocess
 import os
 from os import listdir
 
-PVSLM='/home/miguel/Documents/pvslm/conf'
-PVSLMSRC='/home/miguel/Documents/pvslm/test'
-PVSLMREP='/home/miguel/Documents/pvslm/test'
+PVSLM='pvslmPath'
+PVSLMSRC='pvslmSrc'
+PVSLMREP='pvslmRep'
 
 class PVSLMParser(argparse.ArgumentParser):
     def error(self, message):
