@@ -25,7 +25,7 @@ repoPath=pathAssing('repository')
 confPath=pathAssing('configuration')
 
 try:
-	copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/pvslm.py -o pvslm.py',shell=True)
+	copy=subprocess.Popen('sudo curl http://migueleci.github.io/pvslm/downloads/pvslm.py -o pvslm.py',shell=True)
 	copy.communicate()[0]
 
 	config='"'+confPath+'"'
@@ -33,17 +33,17 @@ try:
 	srcPath='"'+srcPath+'"'
 
 	for i in range (0,2):
-		replace=subprocess.Popen('sed -e "s,pvslmPath,'+config+'," < pvslm.py > tmp.9996',shell=True)
+		replace=subprocess.Popen('sudo sed -e "s,pvslmPath,'+config+'," < pvslm.py > tmp.9996',shell=True)
 		output=subprocess.Popen('mv tmp.9996 pvslm.py',shell=True)
 
-		replace=subprocess.Popen('sed -e "s,pvslmRep,'+repoPath+'," < pvslm.py > tmp.9998',shell=True)
+		replace=subprocess.Popen('sudo sed -e "s,pvslmRep,'+repoPath+'," < pvslm.py > tmp.9998',shell=True)
 		output=subprocess.Popen('mv tmp.9998 pvslm.py',shell=True)
 
-		replace=subprocess.Popen('sed -e "s,pvslmSrc,'+srcPath+'," < pvslm.py > tmp.9997',shell=True)
+		replace=subprocess.Popen('sudo sed -e "s,pvslmSrc,'+srcPath+'," < pvslm.py > tmp.9997',shell=True)
 		output=subprocess.Popen('mv tmp.9997 pvslm.py',shell=True)
 
-	copy=subprocess.Popen('cp -r pvslm.py '+confPath,shell=True)
-	copy=subprocess.Popen('chmod +x '+confPath+'/pvslm.py',shell=True)
+	copy=subprocess.Popen('sudo cp -r pvslm.py '+confPath,shell=True)
+	copy=subprocess.Popen('sudo chmod +x '+confPath+'/pvslm.py',shell=True)
 	copy.communicate()[0]
 
 	print 'PVS Library Manager has been successfully configured. Thanks!'

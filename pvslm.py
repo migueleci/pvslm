@@ -87,11 +87,75 @@ def main():
 			except:
 				print "Something went wrong. Please check the arguments and try again"
 		elif args.create:
-			print 'Works'
+			name=args.name
+			try:
+				files=listdir(PVSLMSRC)
+				sources =[None]
+				for f in files: 
+					if os.path.splitext(f)[1]=='.list': 
+						sources.append(os.path.splitext(f)[0])
+				if name in sources:
+					files=listdir(PVSLMREP)
+					repos =[None]
+					for f in files: 
+						if(os.path.isdir(PVSLMREP+'/'+f)): 
+							repos.append(f)
+					if name not in repos:
+						src=open(PVSLMSRC+'/'+name+'.list')
+						url=src.readline()
+						url=url[6:-1]
+						clone=subprocess.Popen('sudo git clone '+url+' '+PVSLMREP+'/'+name,shell=True)
+						clone.communicate()[0]
+						print "Repository "+name+" created successfully"
+					else:
+						print "The repository "+name+" is already created, try to update it."
+				else:
+					print "The source your trying to create does not exist"
+			except:
+				print "Something went wrong. Please check the arguments and try again"
 		elif args.update:
-			print 'Works'
+			name=args.name
+			try:
+				files=listdir(PVSLMSRC)
+				sources =[None]
+				for f in files: 
+					if os.path.splitext(f)[1]=='.list': 
+						sources.append(os.path.splitext(f)[0])
+				if name in sources:
+					files=listdir(PVSLMREP)
+					repos =[None]
+					for f in files: 
+						if(os.path.isdir(PVSLMREP+'/'+f)): 
+							repos.append(f)
+					if name in repos:
+						src=open(PVSLMSRC+'/'+name+'.list')
+						url=src.readline()
+						url=url[6:-1]
+						clone=subprocess.Popen('sudo git fetch '+url,shell=True)
+						clone.communicate()[0]
+						print "Repository "+name+" updated successfully"
+					else:
+						print "The repository "+name+" does not exists. Created it first"
+				else:
+					print "The source your trying to update does not exist"
+			except:
+				print "Something went wrong. Please check the arguments and try again"
 		elif args.remove:
-			print 'Under development.'
+			name=args.name
+			try:
+				files=listdir(PVSLMREP)
+				repos =[None]
+				for f in files: 
+					if(os.path.isdir(PVSLMREP+'/'+f)): 
+						repos.append(f)
+				if name in repos:
+					clone=subprocess.Popen('sudo rm -rf '+PVSLMREP+'/'+name,shell=True)
+					clone.communicate()[0]
+					print "Repository "+name+" removed successfully"
+				else:
+					print "The repository "+name+" does not exists. Created first"
+			except:
+				print "Something went wrong. Please check the arguments and try again"
 	else :
 		if args.install:
 			print 'Under development.'
