@@ -45,7 +45,9 @@ try:
 	copy=subprocess.Popen('sudo cp -r pvslm.py '+confPath,shell=True)
 	copy=subprocess.Popen('sudo chmod +x '+confPath+'/pvslm.py',shell=True)
 	copy.communicate()[0]
-
+	
+	delete=subprocess.Popen('sudo rm -rf pvslm.py',shell=True)
+	delete.communicate()[0]
 	print 'PVS Library Manager has been successfully configured. Thanks!'
 except:
 	print 'Something went wrong. Please try again.'

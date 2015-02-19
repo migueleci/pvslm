@@ -1,12 +1,14 @@
+#!/usr/bin/env python
+
 import argparse
 import sys
 import subprocess
 import os
 from os import listdir
 
-PVSLM='/home/miguel/Documents/pvslm/conf'
-PVSLMSRC='/home/miguel/Documents/pvslm/test'
-PVSLMREP='/home/miguel/Documents/pvslm/test'
+PVSLM='pvslmPath'
+PVSLMSRC='pvslmSrc'
+PVSLMREP='pvslmRep'
 
 class PVSLMParser(argparse.ArgumentParser):
     def error(self, message):
@@ -131,6 +133,7 @@ def main():
 						src=open(PVSLMSRC+'/'+name+'.list')
 						url=src.readline()
 						url=url[6:-1]
+						os.chdir(PVSLMREP+'/'+name)
 						clone=subprocess.Popen('sudo git fetch '+url,shell=True)
 						clone.communicate()[0]
 						print "Repository "+name+" updated successfully"
