@@ -133,7 +133,7 @@ def main():
 						src=open(PVSLMSRC+'/'+name+'.list')
 						url=src.readline()
 						url=url[6:-1]
-						clone=subprocess.Popen('sudo git fetch '+url,shell=True)
+						clone=subprocess.Popen('sudo cd '+PVSLMREP+'/'+name+ ' && git fetch '+url,shell=True)
 						clone.communicate()[0]
 						print "Repository "+name+" updated successfully"
 					else:
