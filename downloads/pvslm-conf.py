@@ -7,22 +7,28 @@ global repoPath
 global confPath
 global srcPath
 
-def pathAssing(name):
-	ok=False
-	while(not ok):
-		try:
-			path=raw_input("Enter the "+name+" path: ")
-			if (not os.path.exists(path)):
-				replace=subprocess.Popen('mkdir -p '+path,shell=True)	
-				replace.communicate()[0]
-			ok=True
-		except:
-			print 'The directory is not correct. Please try again!'
-	return path
+DEFAULT_INSTALL_DIR = '/usr/local/bin'
+DEFAULT_REPOSRC_DIR = '$HOME/.pvslm/reposrc'
+DEFAULT_REPOS_DIR = '$HOME/.pvslm/repos'
 
-srcPath=pathAssing('source')
-repoPath=pathAssing('repository')
-confPath=pathAssing('configuration')
+def pathAssing(name,default):
+  ok=False
+  while(not ok):
+    try:
+      path=raw_input("Enter the {0} (default={1}): ".format(name,default))
+      path = path.strip()
+      if len(path)==0: path=default
+      if (not os.path.exists(path)):
+        replace=subprocess.Popen('mkdir -p '+path,shell=True)
+        replace.communicate()[0]
+      ok=True
+    except:
+      print 'The provided path is not valid; please try again.'
+  return path
+
+confPath=pathAssing('library manager installation path',DEFAULT_INSTALL_DIR)
+srcPath=pathAssing('repositories source configuration path',DEFAULT_REPOSRC_DIR)
+repoPath=pathAssing('repositories download path',DEFAULT_REPOS_DIR)
 
 try:
 	copy=subprocess.Popen('sudo curl http://migueleci.github.io/pvslm/downloads/pvslm.py -o pvslm.py',shell=True)
