@@ -16,6 +16,8 @@ for var in vals:
     pos=var.find(PVS)
     low=var.rfind(":",0,pos)
     high=var.find(":",pos,len(var))
+    if high==-1:
+      high=len(var)
     PVSPATH=var[low+1:high]
 
 if PVSPATH==None:
