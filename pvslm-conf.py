@@ -57,15 +57,23 @@ try:
   repoPath='"'+repoPath+'"'
   srcPath='"'+srcPath+'"'
   
-  for i in range (0,2):
-    replace=subprocess.Popen('sed -e "s,pvslmPath,'+config+'," < pvslm.py > tmp.9996',shell=True)
-    output=subprocess.Popen('mv tmp.9996 pvslm.py',shell=True)
+  replace=subprocess.Popen('sed -e "s,pvslmPath,'+config+'," < pvslm.py > tmp.9996',shell=True)
+  replace.communicate()[0]
   
-    replace=subprocess.Popen('sed -e "s,pvslmRep,'+repoPath+'," < pvslm.py > tmp.9998',shell=True)
-    output=subprocess.Popen('mv tmp.9998 pvslm.py',shell=True)
+  output=subprocess.Popen('mv tmp.9996 pvslm.py',shell=True)
+  output.communicate()[0]
+  
+  replace=subprocess.Popen('sed -e "s,pvslmRep,'+repoPath+'," < pvslm.py > tmp.9998',shell=True)
+  replace.communicate()[0]
+  
+  output=subprocess.Popen('mv tmp.9998 pvslm.py',shell=True)
+  output.communicate()[0]
     
-    replace=subprocess.Popen('sed -e "s,pvslmSrc,'+srcPath+'," < pvslm.py > tmp.9997',shell=True)
-    output=subprocess.Popen('mv tmp.9997 pvslm.py',shell=True)
+  replace=subprocess.Popen('sed -e "s,pvslmSrc,'+srcPath+'," < pvslm.py > tmp.9997',shell=True)
+  replace.communicate()[0]
+  
+  output=subprocess.Popen('mv tmp.9997 pvslm.py',shell=True)
+  output.communicate()[0]
     
   copy=subprocess.Popen('cp -r pvslm.py '+confPath,shell=True)
   copy.communicate()[0]
