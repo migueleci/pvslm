@@ -60,7 +60,7 @@ def main():
               sources.append(os.path.splitext(f)[0])
           if name not in sources:
             file_src=PVSLMSRC+'/'+name+'.list'
-            content='"URL = '+url+'\nName = '+name+'\nDescription = '+desc+'"'
+            content='"URL = '+url+'\nName = '+name+'\nDescription = '+desc+'\nEnable = Yes"'
             crt=subprocess.Popen('echo '+content+' > '+file_src,shell=True)
             crt.communicate()[0]
             print "Source "+name+" added successfully"

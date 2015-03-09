@@ -68,6 +68,8 @@ try:
     output=subprocess.Popen('mv tmp.9997 pvslm.py',shell=True)
     
   copy=subprocess.Popen('cp -r pvslm.py '+confPath,shell=True)
+  copy.communicate()[0]
+  
   copy=subprocess.Popen('chmod +x '+confPath+'/pvslm.py',shell=True)
   copy.communicate()[0]
   
@@ -81,8 +83,14 @@ try:
   clone.communicate()[0]
   
   delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
+  delete.communicate()[0]
+  
+  delete=subprocess.Popen('rm -rf pvslm-install',shell=True)
+  delete.communicate()[0]
+  
   delete=subprocess.Popen('rm -rf nasalib.list',shell=True)
   delete.communicate()[0]
+  
   print 'PVS Library Manager has been successfully configured. Thanks!'
 except:
   print 'Something went wrong. Please try again.'
