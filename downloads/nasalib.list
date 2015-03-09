@@ -1,0 +1,4 @@
+URL = https://github.com/nasa/pvslib.git
+Name = nasalib
+Description = The NASA PVS Library is a collection of formal PVS developments maintained by the NASA Langley Formal Methods Team. The NASA PVS library is part of the research on theorem proving sponsored by NASA Langley.
+Enable = Yes
