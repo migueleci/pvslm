@@ -61,7 +61,7 @@ def main():
 					if name not in sources:
 						file_src=PVSLMSRC+'/'+name+'.list'
 						content='"URL = '+url+'\nName = '+name+'\nDescription = '+desc+'"'
-						crt=subprocess.Popen('sudo echo '+content+' > '+file_src,shell=True)
+						crt=subprocess.Popen('echo '+content+' > '+file_src,shell=True)
 						crt.communicate()[0]
 						print "Source "+name+" added successfully"
 					else:
@@ -81,7 +81,7 @@ def main():
 					if os.path.splitext(f)[1]=='.list': 
 						sources.append(os.path.splitext(f)[0])
 				if name in sources:
-					crt=subprocess.Popen('sudo rm -rf '+PVSLMSRC+'/'+name+'.list',shell=True)
+					crt=subprocess.Popen('rm -rf '+PVSLMSRC+'/'+name+'.list',shell=True)
 					crt.communicate()[0]
 					print "Source "+name+" deleted successfully"
 				else:
@@ -106,7 +106,7 @@ def main():
 						src=open(PVSLMSRC+'/'+name+'.list')
 						url=src.readline()
 						url=url[6:-1]
-						clone=subprocess.Popen('sudo git clone '+url+' '+PVSLMREP+'/'+name,shell=True)
+						clone=subprocess.Popen('git clone '+url+' '+PVSLMREP+'/'+name,shell=True)
 						clone.communicate()[0]
 						print "Repository "+name+" created successfully"
 					else:
@@ -134,7 +134,7 @@ def main():
 						url=src.readline()
 						url=url[6:-1]
 						os.chdir(PVSLMREP+'/'+name)
-						clone=subprocess.Popen('sudo git fetch '+url,shell=True)
+						clone=subprocess.Popen('git fetch '+url,shell=True)
 						clone.communicate()[0]
 						print "Repository "+name+" updated successfully"
 					else:
@@ -152,7 +152,7 @@ def main():
 					if(os.path.isdir(PVSLMREP+'/'+f)): 
 						repos.append(f)
 				if name in repos:
-					clone=subprocess.Popen('sudo rm -rf '+PVSLMREP+'/'+name,shell=True)
+					clone=subprocess.Popen('rm -rf '+PVSLMREP+'/'+name,shell=True)
 					clone.communicate()[0]
 					print "Repository "+name+" removed successfully"
 				else:
