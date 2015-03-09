@@ -78,7 +78,7 @@ try:
   clone=subprocess.Popen('git clone https://github.com/nasa/pvslib.git '+repoPath+'/nasalib',shell=True)
   clone.communicate()[0]
   
-	delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
+  delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
   delete=subprocess.Popen('rm -rf nasalib.list',shell=True)
 	delete.communicate()[0]
 	print 'PVS Library Manager has been successfully configured. Thanks!'
