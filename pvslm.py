@@ -16,6 +16,22 @@ class PVSLMParser(argparse.ArgumentParser):
     self.print_help()
     sys.exit(2)
 
+global listed
+listed = []
+
+def listdep(name, pkgs, pkgs_name):
+  if(name in pkgs_name):
+    src=open(pkgs[pkgs_name.index(name)]+'/pvsbin/top.dep')
+    line_dep=src.readline()
+    line_dep=src.readline()
+    while(line_dep.find("/")!=-1):
+      pack=line_dep[0:line_dep.find("/")]
+      if (pack not in listed):
+        if(pack in pkgs_name):
+          listed.append(pack)
+        listdep(pack,pkgs,pkgs_name)      
+      line_dep=src.readline()
+
 def main():
   #parser = argparse.ArgumentParser(version='PVS Library Manager 1.0',prog='PVS Library Manager')
   parser = PVSLMParser(version='PVS Library Manager 1.0',prog='PVS Library Manager')
@@ -54,8 +70,8 @@ def main():
         url=args.url
         try:
           files=listdir(PVSLMSRC)
-          sources =[None]
-          for f in files: 						
+          sources =[]
+          for f in files:             
             if os.path.splitext(f)[1]=='.list': 
               sources.append(os.path.splitext(f)[0])
           if name not in sources:
@@ -76,7 +92,7 @@ def main():
       name=args.name
       try:
         files=listdir(PVSLMSRC)
-        sources =[None]
+        sources =[]
         for f in files: 
           if os.path.splitext(f)[1]=='.list': 
             sources.append(os.path.splitext(f)[0])
@@ -92,13 +108,13 @@ def main():
       name=args.name
       try:
         files=listdir(PVSLMSRC)
-        sources =[None]
+        sources =[]
         for f in files: 
           if os.path.splitext(f)[1]=='.list': 
             sources.append(os.path.splitext(f)[0])
         if name in sources:
           files=listdir(PVSLMREP)
-          repos =[None]
+          repos =[]
           for f in files: 
             if(os.path.isdir(PVSLMREP+'/'+f)): 
               repos.append(f)
@@ -119,13 +135,13 @@ def main():
       name=args.name
       try:
         files=listdir(PVSLMSRC)
-        sources =[None]
+        sources =[]
         for f in files: 
           if os.path.splitext(f)[1]=='.list': 
             sources.append(os.path.splitext(f)[0])
         if name in sources:
           files=listdir(PVSLMREP)
-          repos =[None]
+          repos =[]
           for f in files: 
             if(os.path.isdir(PVSLMREP+'/'+f)): 
               repos.append(f)
@@ -161,7 +177,41 @@ def main():
         print "Something went wrong. Please check the arguments and try again"
   else :
     if args.install:
-      print 'Under development.'
+      name=args.name
+      try:
+        files=listdir(PVSLMREP)
+        repos = []
+        for f in files: 
+          if(os.path.isdir(PVSLMREP+'/'+f)):
+            repos.append(PVSLMREP+'/'+f)
+        pkgs = []
+        pkgs_name = []
+        global listed
+        listed = []
+        for r in repos:
+          files = []
+          files=listdir(r)
+          for f in files:
+            if(os.path.isdir(r+'/'+f+'/pvsbin')):
+              pkgs.append(r+'/'+f)
+              pkgs_name.append(f)
+        if name in pkgs_name:
+          listed.append(name)
+          print 'The package '+name+' depends on:'
+          listdep(name, pkgs, pkgs_name)
+          listed.remove(name)
+          listed.sort()
+          print '\n'.join(str(p) for p in listed)
+          apr=raw_input('Would you like to install all the packages (Y/N): ')
+          if apr=='Y' or apr=='y':
+            for l in listed:
+              clone=subprocess.Popen('cp -r '+pkgs[pkgs_name.index(l)]+' '+PVSLM+'/lib',shell=True)
+              clone.communicate()[0]
+            print "Package "+name+" installed successfully"
+        else:
+          print "The package "+name+" does not exists."
+      except:
+        print "Something went wrong. Please check the arguments and try again"
     elif args.update:
       print 'Under development.'
     elif args.delete:
@@ -170,4 +220,4 @@ def main():
       print 'Under development.'
 
 if __name__=='__main__':
-  main()	
+  main()  
