@@ -1,1 +1,1 @@
-su -c "curl http://migueleci.github.io/pvslm/downloads/pvslm-conf.py -o pvslm-install && chmod +x pvslm-install && python ./pvslm-install"
+curl http://migueleci.github.io/pvslm/downloads/pvslm-conf.py -o pvslm-install && chmod +x pvslm-install && python ./pvslm-install
