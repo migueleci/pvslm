@@ -15,8 +15,8 @@ for var in vals:
   if var.find(PVS)>=0:
     pos=var.find(PVS)
     low=var.rfind(":",0,pos)
-    high=var.find(":",pos)
-    PVSPATH=var[low+1:len(var)-high]
+    high=var.find(":",pos,len(var))
+    PVSPATH=var[low+1:high]
 
 if PVSPATH==None:
   print "PVS is not installed, please install and configure it first"
