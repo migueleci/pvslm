@@ -17,7 +17,6 @@ class PVSLMParser(argparse.ArgumentParser):
     sys.exit(2)
 
 global listed
-listed = []
 
 def listdep(name, pkgs, pkgs_name):
   if(name in pkgs_name):
@@ -30,6 +29,21 @@ def listdep(name, pkgs, pkgs_name):
         if(pack in pkgs_name):
           listed.append(pack)
         listdep(pack,pkgs,pkgs_name)      
+      line_dep=src.readline()
+
+def listAlldep(name, pkgs, pkgs_name):
+  pend_pkg=[val for val in pkgs_name if val not in listed]
+  for p in pend_pkg:
+    src=open(pkgs[pkgs_name.index(p)]+'/pvsbin/top.dep')
+    line_dep=src.readline()
+    line_dep=src.readline()
+    finded=False
+    while(line_dep.find("/")!=-1 and not finded):
+      pack=line_dep[0:line_dep.find("/")]
+      if (pack in listed):
+          listed.append(p)
+          finded=True
+          listAlldep(p, pkgs, pkgs_name)      
       line_dep=src.readline()
 
 def main():
@@ -57,9 +71,12 @@ def main():
   pkg.add_argument("-i", "--install", action="store_true", help="Install a package and all its dependecies")
   pkg.add_argument("-u", "--update", action="store_true", help="Update a package and all its dependecies")
   pkg.add_argument("-d", "--delete", action="store_true", help="Delete a package")
-  pkg.add_argument("-f", "--info", action="store_true", help="Get information about a package")
+  pkg.add_argument("-l", "--list", action="store_true", help="List all the dependencies for a package")
   # Positional arguments
-  pkg.add_argument("name", type=str, help="Name of the package")
+  pkg.add_argument("library", type=str, help="Name of the library")
+  pkg.add_argument("package", type=str, help="Name of the package",nargs='?')
+  
+  global listed
   
   args = parser.parse_args()
   if args.subparser_name=='src':
@@ -177,47 +194,123 @@ def main():
         print "Something went wrong. Please check the arguments and try again"
   else :
     if args.install:
-      name=args.name
-      try:
-        files=listdir(PVSLMREP)
-        repos = []
-        for f in files: 
-          if(os.path.isdir(PVSLMREP+'/'+f)):
-            repos.append(PVSLMREP+'/'+f)
-        pkgs = []
-        pkgs_name = []
-        global listed
-        listed = []
-        for r in repos:
-          files = []
-          files=listdir(r)
-          for f in files:
-            if(os.path.isdir(r+'/'+f+'/pvsbin')):
-              pkgs.append(r+'/'+f)
-              pkgs_name.append(f)
-        if name in pkgs_name:
-          listed.append(name)
-          print 'The package '+name+' depends on:'
-          listdep(name, pkgs, pkgs_name)
-          listed.remove(name)
-          listed.sort()
-          print '\n'.join(str(p) for p in listed)
-          apr=raw_input('Would you like to install all the packages (Y/N): ')
-          if apr=='Y' or apr=='y':
-            for l in listed:
-              clone=subprocess.Popen('cp -r '+pkgs[pkgs_name.index(l)]+' '+PVSLM+'/lib',shell=True)
-              clone.communicate()[0]
-            print "Package "+name+" installed successfully"
-        else:
-          print "The package "+name+" does not exists."
-      except:
-        print "Something went wrong. Please check the arguments and try again"
+      if args.package!=None:
+        fpackage=args.package
+        flibrary=args.library
+        try:
+          lpath=PVSLMREP+'/'+flibrary
+          if(os.path.isdir(lpath)):
+            files=listdir(lpath)
+            pkgs=[]
+            listed = []
+            pkgs_name=[]
+            for f in files:
+              if(os.path.isdir(lpath+'/'+f+'/pvsbin')):
+                pkgs.append(lpath+'/'+f)
+                pkgs_name.append(f)
+            if fpackage in pkgs_name:
+              listed.append(fpackage)
+              listdep(fpackage, pkgs, pkgs_name)
+              listed.remove(fpackage)
+              if len(listed)>0:
+                listed=sorted(set(listed))
+                print 'The package '+fpackage+' depends on:'
+                print '\n'.join(str(p) for p in listed)
+              else:
+                print "The package "+fpackage+" has no dependencies"
+              apr=raw_input('Would you like to install the package(s) (Y/N): ')
+              if apr=='Y' or apr=='y':
+                if(not os.path.isdir(PVSLM+'/'+flibrary)):
+                  create=subprocess.Popen('mkdir -p '+PVSLM+'/'+flibrary,shell=True)
+                  create.communicate()[0]
+                listed.append(fpackage)
+                for l in listed:
+                  copy=subprocess.Popen('cp -r '+pkgs[pkgs_name.index(l)]+' '+PVSLM+'/'+flibrary,shell=True)
+                  copy.communicate()[0]
+                print "Package "+fpackage+" installed successfully"
+            else:
+              print "The package "+fpackage+" does not exist"
+          else:
+            print "The library "+flibrary+" does not exist"
+        except:
+          print "Something went wrong. Please check the arguments and try again"
+      else:
+        print "Please include the package name after the library and try again"
     elif args.update:
       print 'Under development.'
     elif args.delete:
-      print 'Under development.'
-    elif args.info:
-      print 'Under development.'
+      if args.package!=None:
+        fpackage=args.package
+        flibrary=args.library
+        try:
+          lpath=PVSLM+'/'+flibrary
+          if(os.path.isdir(lpath)):
+            files=listdir(lpath)
+            pkgs=[]
+            listed = []
+            pkgs_name=[]
+            for f in files:
+              if(os.path.isdir(lpath+'/'+f+'/pvsbin')):
+                pkgs.append(lpath+'/'+f)
+                pkgs_name.append(f)
+            if fpackage in pkgs_name:
+              listed.append(fpackage)
+              listAlldep(fpackage, pkgs, pkgs_name)
+              listed.remove(fpackage)
+              if len(listed)>0:
+                listed=sorted(set(listed))
+                print 'The package '+fpackage+' depends on:'
+                print '\n'.join(str(p) for p in listed)
+              else:
+                print "The package "+fpackage+" has no dependencies"
+              apr=raw_input('Would you like to remove the package(s) (Y/N): ')
+              if apr=='Y' or apr=='y':
+                listed.append(fpackage)
+                for l in listed:
+                  delete=subprocess.Popen('rm -rf '+pkgs[pkgs_name.index(l)],shell=True)
+                  delete.communicate()[0]
+                print "Package "+fpackage+" installed successfully"
+            else:
+              print "The package "+fpackage+" does not exist"
+          else:
+            print "The library "+flibrary+" does not exist"
+        except:
+          print "Something went wrong. Please check the arguments and try again"
+      else:
+        print "Please include the package name after the library and try again"
+    elif args.list:
+      if args.package!=None:
+        fpackage=args.package
+        flibrary=args.library
+        try:
+          lpath=PVSLMREP+'/'+flibrary
+          if(os.path.isdir(lpath)):
+            files=listdir(lpath)
+            pkgs=[]
+            listed = []
+            pkgs_name=[]
+            for f in files:
+              if(os.path.isdir(lpath+'/'+f+'/pvsbin')):
+                pkgs.append(lpath+'/'+f)
+                pkgs_name.append(f)
+            if fpackage in pkgs_name:
+              listed.append(fpackage)
+              listdep(fpackage, pkgs, pkgs_name)
+              listed.remove(fpackage)
+              if len(listed)>0:
+                listed=sorted(set(listed))
+                print 'The package '+fpackage+' depends on:'
+                print '\n'.join(str(p) for p in listed)
+              else:
+                print "The package "+fpackage+" has no dependencies"
+            else:
+              print "The package "+fpackage+" does not exist"
+          else:
+            print "The library "+flibrary+" does not exist"
+        except:
+          print "Something went wrong. Please check the arguments and try again"
+      else:
+        print "Please include the package name after the library and try again"
 
 if __name__=='__main__':
   main()  
