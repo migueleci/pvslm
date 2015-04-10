@@ -248,7 +248,7 @@ def main():
       fpackage=val[1]
       flibrary=val[0]
       try:
-        lpath=PVSLMREP+'/'+flibrary
+        lpath=PVSLM+'/'+flibrary
         if(os.path.isdir(lpath)):
           files=listdir(lpath)
           pkgs=[]
@@ -280,7 +280,7 @@ def main():
                 copy.communicate()[0]
               print "The package "+fpackage+" has been updated successfully"
           else:
-            print "The package "+fpackage+" does not exist"
+            print "The package "+fpackage+" is not installed"
         else:
           print "The library "+flibrary+" does not exist"
       except:
