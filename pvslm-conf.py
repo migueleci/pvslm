@@ -62,9 +62,12 @@ try:
   repoPath='"'+repoPath+'"'
   srcPath='"'+srcPath+'"'
   
-  replace=subprocess.Popen('sed -e "s,pvsPath,'+pvsloc+'," < pvslm.py > tmp.9996',shell=True)
+  replace=subprocess.Popen('sed -e "s,pvsPath,'+pvsloc+'," < pvslm.py > tmp.9995',shell=True)
   replace.communicate()[0]
   
+  output=subprocess.Popen('mv tmp.9995 pvslm.py',shell=True)
+  output.communicate()[0]
+
   replace=subprocess.Popen('sed -e "s,pvslmPath,'+config+'," < pvslm.py > tmp.9996',shell=True)
   replace.communicate()[0]
   
