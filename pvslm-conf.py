@@ -94,12 +94,6 @@ try:
   clone=subprocess.Popen('git clone https://github.com/nasa/pvslib.git '+repoPath+'/nasalib',shell=True)
   clone.communicate()[0]
     
-  copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/pvs-emacs '+PVSPATH+'/nasalib/',shell=True)
-  copy.communicate()[0]
-  
-  copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/PVSioChecker '+PVSPATH+'/nasalib/',shell=True)
-  copy.communicate()[0]
-
   copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/pvs-patches '+PVSPATH+'/nasalib/',shell=True)
   copy.communicate()[0]
   
