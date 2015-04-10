@@ -231,7 +231,7 @@ def main():
                 create.communicate()[0]
               listed.append(fpackage)
               for l in listed:
-                copy=subprocess.Popen('cp -r '+pkgs[pkgs_name.index(l)]+' '+PVSLM+'/'+flibrary,shell=True)
+                copy=subprocess.Popen('rsync -azh '+pkgs[pkgs_name.index(l)]+' '+PVSLM+'/'+flibrary,shell=True)
                 copy.communicate()[0]
               print "Package "+fpackage+" installed successfully"
           else:
@@ -276,7 +276,7 @@ def main():
                 create.communicate()[0]
               listed.append(fpackage)
               for l in listed:
-                copy=subprocess.Popen('rsync -azvh '+pkgs[pkgs_name.index(l)]+' '+PVSLM+'/'+flibrary,shell=True)
+                copy=subprocess.Popen('rsync -azh '+pkgs[pkgs_name.index(l)]+' '+PVSLM+'/'+flibrary,shell=True)
                 copy.communicate()[0]
               print "The package "+fpackage+" has been updated successfully"
           else:

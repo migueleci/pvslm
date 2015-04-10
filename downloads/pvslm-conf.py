@@ -44,8 +44,14 @@ def pathAssing(name,default):
   return path
 
 confPath=pathAssing('library manager installation path',DEFAULT_INSTALL_DIR)
-srcPath=confPath+'/.pvslm/reposrc'
+
+srcPath=confPath+'/.pvslm/reposrc' 
+replace=subprocess.Popen('mkdir -p '+srcPath,shell=True)
+replace.communicate()[0]
+
 repoPath=confPath+'/.pvslm/repos'
+replace=subprocess.Popen('mkdir -p '+repoPath,shell=True)
+replace.communicate()[0]
 
 try:
   copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/pvslm.py -o pvslm.py',shell=True)
@@ -73,7 +79,7 @@ try:
   output=subprocess.Popen('mv tmp.9997 pvslm.py',shell=True)
   output.communicate()[0]
     
-  copy=subprocess.Popen('rsync -azvh pvslm.py '+confPath,shell=True)
+  copy=subprocess.Popen('rsync -azh pvslm.py '+confPath,shell=True)
   copy.communicate()[0]
   
   copy=subprocess.Popen('chmod +x '+confPath+'/pvslm.py',shell=True)
@@ -82,19 +88,19 @@ try:
   copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/nasalib.list -o nasalib.list',shell=True)
   copy.communicate()[0]
   
-  copy=subprocess.Popen('rsync -azvh nasalib.list '+srcPath,shell=True)
+  copy=subprocess.Popen('rsync -azh nasalib.list '+srcPath,shell=True)
   copy.communicate()[0]
 
   clone=subprocess.Popen('git clone https://github.com/nasa/pvslib.git '+repoPath+'/nasalib',shell=True)
   clone.communicate()[0]
     
-  copy=subprocess.Popen('rsync -azvh '+repoPath+'/nasalib/pvs-emacs '+PVSPATH+'nasalib/',shell=True)
+  copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/pvs-emacs '+PVSPATH+'/nasalib/',shell=True)
   copy.communicate()[0]
   
-  copy=subprocess.Popen('rsync -azvh '+repoPath+'/nasalib/PVSioChecker '+PVSPATH+'nasalib/',shell=True)
+  copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/PVSioChecker '+PVSPATH+'/nasalib/',shell=True)
   copy.communicate()[0]
 
-  copy=subprocess.Popen('rsync -azvh '+repoPath+'/nasalib/pvs-patches '+PVSPATH+'nasalib/',shell=True)
+  copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/pvs-patches '+PVSPATH+'/nasalib/',shell=True)
   copy.communicate()[0]
   
   delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
