@@ -8,17 +8,13 @@ import os
 global PVSPATH
 PVSPATH=None
 
-PVS="PVS"
+PVS="PVS_PATH"
 envVar=os.environ
-vals=envVar.values()
+vals=envVar.keys()
 for var in vals:
   if var.find(PVS)>=0:
-    pos=var.find(PVS)
-    low=var.rfind(":",0,pos)
-    high=var.find(":",pos,len(var))
-    if high==-1:
-      high=len(var)
-    PVSPATH=var[low+1:high]
+    PVSPATH=envVar[var]
+    break
 
 if PVSPATH==None:
   print "PVS is not installed, please install and configure it first"
@@ -48,8 +44,8 @@ def pathAssing(name,default):
   return path
 
 confPath=pathAssing('library manager installation path',DEFAULT_INSTALL_DIR)
-srcPath=pathAssing('repositories source configuration path',DEFAULT_REPOSRC_DIR)
-repoPath=pathAssing('repositories download path',DEFAULT_REPOS_DIR)
+srcPath=confPath+'/.pvslm/reposrc'
+repoPath=confPath+'/.pvslm/repos'
 
 try:
   copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/pvslm.py -o pvslm.py',shell=True)
@@ -77,7 +73,7 @@ try:
   output=subprocess.Popen('mv tmp.9997 pvslm.py',shell=True)
   output.communicate()[0]
     
-  copy=subprocess.Popen('cp -r pvslm.py '+confPath,shell=True)
+  copy=subprocess.Popen('rsync -azvh pvslm.py '+confPath,shell=True)
   copy.communicate()[0]
   
   copy=subprocess.Popen('chmod +x '+confPath+'/pvslm.py',shell=True)
@@ -86,11 +82,20 @@ try:
   copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/nasalib.list -o nasalib.list',shell=True)
   copy.communicate()[0]
   
-  copy=subprocess.Popen('cp -r nasalib.list '+srcPath,shell=True)
+  copy=subprocess.Popen('rsync -azvh nasalib.list '+srcPath,shell=True)
   copy.communicate()[0]
-  
+
   clone=subprocess.Popen('git clone https://github.com/nasa/pvslib.git '+repoPath+'/nasalib',shell=True)
   clone.communicate()[0]
+    
+  copy=subprocess.Popen('rsync -azvh '+repoPath+'/nasalib/pvs-emacs '+PVSPATH+'nasalib/',shell=True)
+  copy.communicate()[0]
+  
+  copy=subprocess.Popen('rsync -azvh '+repoPath+'/nasalib/PVSioChecker '+PVSPATH+'nasalib/',shell=True)
+  copy.communicate()[0]
+
+  copy=subprocess.Popen('rsync -azvh '+repoPath+'/nasalib/pvs-patches '+PVSPATH+'nasalib/',shell=True)
+  copy.communicate()[0]
   
   delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
   delete.communicate()[0]
