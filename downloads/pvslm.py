@@ -102,7 +102,7 @@ def main():
   pkg.add_argument("-d", "--delete", action="store_true", help="Delete a package")
   pkg.add_argument("-l", "--list", action="store_true", help="List all the dependencies for a package")
   # Positional arguments
-  pkg.add_argument("package", type=str, help="Name of the package")
+  pkg.add_argument("package", type=str, help="Name of the package",nargs='?') # Optional
   
   global listed
   
@@ -198,7 +198,7 @@ def main():
   else :
     if args.install:      
       val=re.split('@+',args.package)
-      if len(val)==1:
+      if len(val)!=2:
         print "Remeber to specify te library and package (library@package). Please try again)"
         sys.exit()
       fpackage=val[1]
@@ -242,7 +242,7 @@ def main():
         print "Something went wrong. Please check the arguments and try again"
     elif args.update:
       val=re.split('@+',args.package)
-      if len(val)==1:
+      if len(val)!=2:
         print "Remeber to specify te library and package (library@package). Please try again)"
         sys.exit()
       fpackage=val[1]
@@ -287,7 +287,7 @@ def main():
         print "Something went wrong. Please check the arguments and try again"
     elif args.delete:
       val=re.split('@+',args.package)
-      if len(val)==1:
+      if len(val)!=2:
         print "Remeber to specify te library and package (library@package). Please try again)"
         sys.exit()
       fpackage=val[1]
@@ -328,7 +328,18 @@ def main():
         print "Something went wrong. Please check the arguments and try again"
     elif args.list:      
       val=re.split('@+',args.package)
-      if len(val)==1:
+      if len(val)==0:
+        try:
+          files=listdir(PVSLMREP)
+          repos =[]
+          for f in files: 
+            if os.path.isdir(PVSLMREP+'/'+f):
+              repos.append(f)
+          print "You have configured the libraries:"
+          print '\n'.join(str(p) for p in repos)
+        except:
+          print "Something went wrong. Please check the arguments and try again"
+      elif len(val)==1:
         flibrary=val[0]
         try:
           lpath=PVSLMREP+'/'+flibrary
@@ -346,7 +357,7 @@ def main():
             print "The library "+flibrary+" does not exist"
         except:
           print "Something went wrong. Please check the arguments and try again"
-      else:
+      elif len(val)==2:
         fpackage=val[1]
         flibrary=val[0]
         try:
@@ -376,6 +387,9 @@ def main():
             print "The library "+flibrary+" does not exist"
         except:
           print "Something went wrong. Please check the arguments and try again"
-      
+      else:
+        print "Remeber to specify te library and package (library@package). Please try again)"
+        sys.exit()
+
 if __name__=='__main__':
   main()  
