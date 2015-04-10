@@ -57,9 +57,13 @@ try:
   copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/pvslm.py -o pvslm.py',shell=True)
   copy.communicate()[0]
   
+  pvsloc='"'+PVSPATH+'"'
   config='"'+confPath+'"'
   repoPath='"'+repoPath+'"'
   srcPath='"'+srcPath+'"'
+  
+  replace=subprocess.Popen('sed -e "s,pvsPath,'+pvsloc+'," < pvslm.py > tmp.9996',shell=True)
+  replace.communicate()[0]
   
   replace=subprocess.Popen('sed -e "s,pvslmPath,'+config+'," < pvslm.py > tmp.9996',shell=True)
   replace.communicate()[0]

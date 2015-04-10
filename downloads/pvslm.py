@@ -7,6 +7,7 @@ import re
 import os
 from os import listdir
 
+PVSPATH='pvsPath'
 PVSLM='pvslmPath'
 PVSLMSRC='pvslmSrc'
 PVSLMREP='pvslmRep'
@@ -229,11 +230,11 @@ def main():
             apr=raw_input('Would you like to install the package(s) (Y/N): ')
             if apr=='Y' or apr=='y':
               if(not os.path.isdir(PVSLM+'/'+flibrary)):
-                create=subprocess.Popen('mkdir -p '+PVSLM+'/'+flibrary,shell=True)
+                create=subprocess.Popen('mkdir -p '+PVSPATH+'/'+flibrary,shell=True)
                 create.communicate()[0]
               listed.append(fpackage)
               for l in listed:
-                copy=subprocess.Popen('rsync -azh '+pkgs[pkgs_name.index(l)]+' '+PVSLM+'/'+flibrary,shell=True)
+                copy=subprocess.Popen('rsync -azh '+pkgs[pkgs_name.index(l)]+' '+PVSPATH+'/'+flibrary,shell=True)
                 copy.communicate()[0]
               print "Package "+fpackage+" installed successfully"
           else:
@@ -252,7 +253,7 @@ def main():
       fpackage=val[1]
       flibrary=val[0]
       try:
-        lpath=PVSLM+'/'+flibrary
+        lpath=PVSPATH+'/'+flibrary
         if(os.path.isdir(lpath)):
           files=listdir(lpath)
           pkgs=[]
@@ -276,11 +277,11 @@ def main():
             apr=raw_input('Would you like to update the package(s) (Y/N): ')
             if apr=='Y' or apr=='y':
               if(not os.path.isdir(PVSLM+'/'+flibrary)):
-                create=subprocess.Popen('mkdir -p '+PVSLM+'/'+flibrary,shell=True)
+                create=subprocess.Popen('mkdir -p '+lpath,shell=True)
                 create.communicate()[0]
               listed.append(fpackage)
               for l in listed:
-                copy=subprocess.Popen('rsync -azh '+pkgs[pkgs_name.index(l)]+' '+PVSLM+'/'+flibrary,shell=True)
+                copy=subprocess.Popen('rsync -azh '+pkgs[pkgs_name.index(l)]+' '+lpath,shell=True)
                 copy.communicate()[0]
               print "The package "+fpackage+" has been updated successfully"
           else:
@@ -299,7 +300,7 @@ def main():
       fpackage=val[1]
       flibrary=val[0]
       try:
-        lpath=PVSLM+'/'+flibrary
+        lpath=PVSPATH+'/'+flibrary
         if(os.path.isdir(lpath)):
           files=listdir(lpath)
           pkgs=[]
