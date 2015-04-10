@@ -85,6 +85,9 @@ try:
   copy=subprocess.Popen('chmod +x '+confPath+'/pvslm.py',shell=True)
   copy.communicate()[0]
   
+  copy=subprocess.Popen('ln -s '+confPath+'/pvslm.py '+PVSPATH+'/',shell=True)
+  copy.communicate()[0]
+
   copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/nasalib.list -o nasalib.list',shell=True)
   copy.communicate()[0]
   
@@ -95,6 +98,9 @@ try:
   clone.communicate()[0]
     
   copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/pvs-patches '+PVSPATH+'/nasalib/',shell=True)
+  copy.communicate()[0]
+
+  copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/install-scripts '+PVSPATH+'/nasalib/',shell=True)
   copy.communicate()[0]
   
   delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
