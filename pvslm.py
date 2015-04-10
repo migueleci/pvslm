@@ -3,9 +3,11 @@
 import argparse
 import sys
 import subprocess
+import re
 import os
 from os import listdir
 
+PVSPATH='pvsPath'
 PVSLM='pvslmPath'
 PVSLMSRC='pvslmSrc'
 PVSLMREP='pvslmRep'
@@ -46,6 +48,34 @@ def listAlldep(name, pkgs, pkgs_name):
           listAlldep(p, pkgs, pkgs_name)      
       line_dep=src.readline()
 
+def update_library(name):
+  try:
+    files=listdir(PVSLMSRC)
+    sources =[]
+    for f in files: 
+      if os.path.splitext(f)[1]=='.list': 
+        sources.append(os.path.splitext(f)[0])
+    if name in sources:
+      files=listdir(PVSLMREP)
+      repos =[]
+      for f in files: 
+        if(os.path.isdir(PVSLMREP+'/'+f)): 
+          repos.append(f)
+      if name in repos:
+        src=open(PVSLMSRC+'/'+name+'.list')
+        url=src.readline()
+        url=url[6:-1]
+        os.chdir(PVSLMREP+'/'+name)
+        clone=subprocess.Popen('git pull '+url,shell=True)
+        clone.communicate()[0]
+        print "Repository "+name+" updated successfully"
+      else:
+        print "The repository "+name+" does not exists. Created it first"
+    else:
+      print "The source your trying to update does not exist"
+  except:
+    print "Something went wrong. Please check the arguments and try again"
+
 def main():
   #parser = argparse.ArgumentParser(version='PVS Library Manager 1.0',prog='PVS Library Manager')
   parser = PVSLMParser(version='PVS Library Manager 1.0',prog='PVS Library Manager')
@@ -73,8 +103,7 @@ def main():
   pkg.add_argument("-d", "--delete", action="store_true", help="Delete a package")
   pkg.add_argument("-l", "--list", action="store_true", help="List all the dependencies for a package")
   # Positional arguments
-  pkg.add_argument("library", type=str, help="Name of the library")
-  pkg.add_argument("package", type=str, help="Name of the package",nargs='?')
+  pkg.add_argument("package", type=str, help="Name of the package",nargs='?') # Optional
   
   global listed
   
@@ -150,32 +179,7 @@ def main():
         print "Something went wrong. Please check the arguments and try again"
     elif args.update:
       name=args.name
-      try:
-        files=listdir(PVSLMSRC)
-        sources =[]
-        for f in files: 
-          if os.path.splitext(f)[1]=='.list': 
-            sources.append(os.path.splitext(f)[0])
-        if name in sources:
-          files=listdir(PVSLMREP)
-          repos =[]
-          for f in files: 
-            if(os.path.isdir(PVSLMREP+'/'+f)): 
-              repos.append(f)
-          if name in repos:
-            src=open(PVSLMSRC+'/'+name+'.list')
-            url=src.readline()
-            url=url[6:-1]
-            os.chdir(PVSLMREP+'/'+name)
-            clone=subprocess.Popen('git fetch '+url,shell=True)
-            clone.communicate()[0]
-            print "Repository "+name+" updated successfully"
-          else:
-            print "The repository "+name+" does not exists. Created it first"
-        else:
-          print "The source your trying to update does not exist"
-      except:
-        print "Something went wrong. Please check the arguments and try again"
+      update_library(name)
     elif args.remove:
       name=args.name
       try:
@@ -193,95 +197,178 @@ def main():
       except:
         print "Something went wrong. Please check the arguments and try again"
   else :
-    if args.install:
+    if args.install:      
+      val=[]
       if args.package!=None:
-        fpackage=args.package
-        flibrary=args.library
-        try:
-          lpath=PVSLMREP+'/'+flibrary
-          if(os.path.isdir(lpath)):
-            files=listdir(lpath)
-            pkgs=[]
-            listed = []
-            pkgs_name=[]
-            for f in files:
-              if(os.path.isdir(lpath+'/'+f+'/pvsbin')):
-                pkgs.append(lpath+'/'+f)
-                pkgs_name.append(f)
-            if fpackage in pkgs_name:
-              listed.append(fpackage)
-              listdep(fpackage, pkgs, pkgs_name)
-              listed.remove(fpackage)
-              if len(listed)>0:
-                listed=sorted(set(listed))
-                print 'The package '+fpackage+' depends on:'
-                print '\n'.join(str(p) for p in listed)
-              else:
-                print "The package "+fpackage+" has no dependencies"
-              apr=raw_input('Would you like to install the package(s) (Y/N): ')
-              if apr=='Y' or apr=='y':
-                if(not os.path.isdir(PVSLM+'/'+flibrary)):
-                  create=subprocess.Popen('mkdir -p '+PVSLM+'/'+flibrary,shell=True)
-                  create.communicate()[0]
-                listed.append(fpackage)
-                for l in listed:
-                  copy=subprocess.Popen('cp -r '+pkgs[pkgs_name.index(l)]+' '+PVSLM+'/'+flibrary,shell=True)
-                  copy.communicate()[0]
-                print "Package "+fpackage+" installed successfully"
+        val=re.split('@+',args.package)
+      if len(val)!=2:
+        print "Remeber to specify te library and package (library@package). Please try again"
+        sys.exit()
+      fpackage=val[1]
+      flibrary=val[0]
+      try:
+        lpath=PVSLMREP+'/'+flibrary
+        if(os.path.isdir(lpath)):
+          files=listdir(lpath)
+          pkgs=[]
+          listed = []
+          pkgs_name=[]
+          for f in files:
+            if(os.path.isdir(lpath+'/'+f+'/pvsbin')):
+              pkgs.append(lpath+'/'+f)
+              pkgs_name.append(f)
+          if fpackage in pkgs_name:
+            listed.append(fpackage)
+            listdep(fpackage, pkgs, pkgs_name)
+            listed.remove(fpackage)
+            if len(listed)>0:
+              listed=sorted(set(listed))
+              print 'The package '+fpackage+' depends on:'
+              print '\n'.join(str(p) for p in listed)
             else:
-              print "The package "+fpackage+" does not exist"
+              print "The package "+fpackage+" has no dependencies"
+            apr=raw_input('Would you like to install the package(s) (Y/N): ')
+            if apr=='Y' or apr=='y':
+              if(not os.path.isdir(PVSLM+'/'+flibrary)):
+                create=subprocess.Popen('mkdir -p '+PVSPATH+'/'+flibrary,shell=True)
+                create.communicate()[0]
+              listed.append(fpackage)
+              for l in listed:
+                copy=subprocess.Popen('rsync -azh '+pkgs[pkgs_name.index(l)]+' '+PVSPATH+'/'+flibrary,shell=True)
+                copy.communicate()[0]
+              print "Package "+fpackage+" installed successfully"
           else:
-            print "The library "+flibrary+" does not exist"
-        except:
-          print "Something went wrong. Please check the arguments and try again"
-      else:
-        print "Please include the package name after the library and try again"
+            print "The package "+fpackage+" does not exist"
+        else:
+          print "The library "+flibrary+" does not exist"
+      except:
+        print "Something went wrong. Please check the arguments and try again"
     elif args.update:
-      print 'Under development.'
-    elif args.delete:
+      val=[]
       if args.package!=None:
-        fpackage=args.package
-        flibrary=args.library
+        val=re.split('@+',args.package)
+      if len(val)!=2:
+        print "Remeber to specify te library and package (library@package). Please try again"
+        sys.exit()
+      fpackage=val[1]
+      flibrary=val[0]
+      try:
+        lpath=PVSPATH+'/'+flibrary
+        if(os.path.isdir(lpath)):
+          files=listdir(lpath)
+          pkgs=[]
+          listed = []
+          pkgs_name=[]
+          for f in files:
+            if(os.path.isdir(lpath+'/'+f+'/pvsbin')):
+              pkgs.append(lpath+'/'+f)
+              pkgs_name.append(f)
+          if fpackage in pkgs_name:
+            update_library(flibrary)
+            listed.append(fpackage)
+            listdep(fpackage, pkgs, pkgs_name)
+            listed.remove(fpackage)
+            if len(listed)>0:
+              listed=sorted(set(listed))
+              print 'The package '+fpackage+' depends on:'
+              print '\n'.join(str(p) for p in listed)
+            else:
+              print "The package "+fpackage+" has no dependencies"
+            apr=raw_input('Would you like to update the package(s) (Y/N): ')
+            if apr=='Y' or apr=='y':
+              if(not os.path.isdir(PVSLM+'/'+flibrary)):
+                create=subprocess.Popen('mkdir -p '+lpath,shell=True)
+                create.communicate()[0]
+              listed.append(fpackage)
+              for l in listed:
+                copy=subprocess.Popen('rsync -azh '+pkgs[pkgs_name.index(l)]+' '+lpath,shell=True)
+                copy.communicate()[0]
+              print "The package "+fpackage+" has been updated successfully"
+          else:
+            print "The package "+fpackage+" is not installed"
+        else:
+          print "The library "+flibrary+" does not exist"
+      except:
+        print "Something went wrong. Please check the arguments and try again"
+    elif args.delete:
+      val=[]
+      if args.package!=None:
+        val=re.split('@+',args.package)
+      if len(val)!=2:
+        print "Remeber to specify te library and package (library@package). Please try again"
+        sys.exit()
+      fpackage=val[1]
+      flibrary=val[0]
+      try:
+        lpath=PVSPATH+'/'+flibrary
+        if(os.path.isdir(lpath)):
+          files=listdir(lpath)
+          pkgs=[]
+          listed = []
+          pkgs_name=[]
+          for f in files:
+            if(os.path.isdir(lpath+'/'+f+'/pvsbin')):
+              pkgs.append(lpath+'/'+f)
+              pkgs_name.append(f)
+          if fpackage in pkgs_name:
+            listed.append(fpackage)
+            listAlldep(fpackage, pkgs, pkgs_name)
+            listed.remove(fpackage)
+            if len(listed)>0:
+              listed=sorted(set(listed))
+              print 'The package '+fpackage+' depends on:'
+              print '\n'.join(str(p) for p in listed)
+            else:
+              print "The package "+fpackage+" has no dependencies"
+            apr=raw_input('Would you like to remove the package(s) (Y/N): ')
+            if apr=='Y' or apr=='y':
+              listed.append(fpackage)
+              for l in listed:
+                delete=subprocess.Popen('rm -rf '+pkgs[pkgs_name.index(l)],shell=True)
+                delete.communicate()[0]
+              print "The package "+fpackage+" has been removed successfully"
+          else:
+            print "The package "+fpackage+" does not exist"
+        else:
+          print "The library "+flibrary+" does not exist"
+      except:
+        print "Something went wrong. Please check the arguments and try again"
+    elif args.list:      
+      val=[]
+      if args.package!=None:
+        val=re.split('@+',args.package)
+      if len(val)==0:
         try:
-          lpath=PVSLM+'/'+flibrary
+          files=listdir(PVSLMREP)
+          repos =[]
+          for f in files: 
+            if os.path.isdir(PVSLMREP+'/'+f):
+              repos.append(f)
+          print "You have configured the libraries:"
+          print '\n'.join(str(p) for p in repos)
+        except:
+          print "Something went wrong. Please check the arguments and try again"
+      elif len(val)==1:
+        flibrary=val[0]
+        try:
+          lpath=PVSLMREP+'/'+flibrary
           if(os.path.isdir(lpath)):
             files=listdir(lpath)
             pkgs=[]
-            listed = []
             pkgs_name=[]
             for f in files:
               if(os.path.isdir(lpath+'/'+f+'/pvsbin')):
                 pkgs.append(lpath+'/'+f)
                 pkgs_name.append(f)
-            if fpackage in pkgs_name:
-              listed.append(fpackage)
-              listAlldep(fpackage, pkgs, pkgs_name)
-              listed.remove(fpackage)
-              if len(listed)>0:
-                listed=sorted(set(listed))
-                print 'The package '+fpackage+' depends on:'
-                print '\n'.join(str(p) for p in listed)
-              else:
-                print "The package "+fpackage+" has no dependencies"
-              apr=raw_input('Would you like to remove the package(s) (Y/N): ')
-              if apr=='Y' or apr=='y':
-                listed.append(fpackage)
-                for l in listed:
-                  delete=subprocess.Popen('rm -rf '+pkgs[pkgs_name.index(l)],shell=True)
-                  delete.communicate()[0]
-                print "Package "+fpackage+" installed successfully"
-            else:
-              print "The package "+fpackage+" does not exist"
+            print 'The library '+flibrary+' has the packages:'
+            print '\n'.join(str(p) for p in pkgs_name)
           else:
             print "The library "+flibrary+" does not exist"
         except:
           print "Something went wrong. Please check the arguments and try again"
-      else:
-        print "Please include the package name after the library and try again"
-    elif args.list:
-      if args.package!=None:
-        fpackage=args.package
-        flibrary=args.library
+      elif len(val)==2:
+        fpackage=val[1]
+        flibrary=val[0]
         try:
           lpath=PVSLMREP+'/'+flibrary
           if(os.path.isdir(lpath)):
@@ -310,7 +397,8 @@ def main():
         except:
           print "Something went wrong. Please check the arguments and try again"
       else:
-        print "Please include the package name after the library and try again"
+        print "Remeber to specify te library and package (library@package). Please try again"
+        sys.exit()
 
 if __name__=='__main__':
   main()  
