@@ -197,7 +197,9 @@ def main():
         print "Something went wrong. Please check the arguments and try again"
   else :
     if args.install:      
-      val=re.split('@+',args.package)
+      val=[]
+      if args.package!=None:
+        val=re.split('@+',args.package)
       if len(val)!=2:
         print "Remeber to specify te library and package (library@package). Please try again)"
         sys.exit()
@@ -241,7 +243,9 @@ def main():
       except:
         print "Something went wrong. Please check the arguments and try again"
     elif args.update:
-      val=re.split('@+',args.package)
+      val=[]
+      if args.package!=None:
+        val=re.split('@+',args.package)
       if len(val)!=2:
         print "Remeber to specify te library and package (library@package). Please try again)"
         sys.exit()
@@ -286,7 +290,9 @@ def main():
       except:
         print "Something went wrong. Please check the arguments and try again"
     elif args.delete:
-      val=re.split('@+',args.package)
+      val=[]
+      if args.package!=None:
+        val=re.split('@+',args.package)
       if len(val)!=2:
         print "Remeber to specify te library and package (library@package). Please try again)"
         sys.exit()
