@@ -201,7 +201,7 @@ def main():
       if args.package!=None:
         val=re.split('@+',args.package)
       if len(val)!=2:
-        print "Remeber to specify te library and package (library@package). Please try again)"
+        print "Remeber to specify te library and package (library@package). Please try again"
         sys.exit()
       fpackage=val[1]
       flibrary=val[0]
@@ -247,7 +247,7 @@ def main():
       if args.package!=None:
         val=re.split('@+',args.package)
       if len(val)!=2:
-        print "Remeber to specify te library and package (library@package). Please try again)"
+        print "Remeber to specify te library and package (library@package). Please try again"
         sys.exit()
       fpackage=val[1]
       flibrary=val[0]
@@ -294,7 +294,7 @@ def main():
       if args.package!=None:
         val=re.split('@+',args.package)
       if len(val)!=2:
-        print "Remeber to specify te library and package (library@package). Please try again)"
+        print "Remeber to specify te library and package (library@package). Please try again"
         sys.exit()
       fpackage=val[1]
       flibrary=val[0]
@@ -396,7 +396,7 @@ def main():
         except:
           print "Something went wrong. Please check the arguments and try again"
       else:
-        print "Remeber to specify te library and package (library@package). Please try again)"
+        print "Remeber to specify te library and package (library@package). Please try again"
         sys.exit()
 
 if __name__=='__main__':
