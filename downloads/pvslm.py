@@ -327,7 +327,9 @@ def main():
       except:
         print "Something went wrong. Please check the arguments and try again"
     elif args.list:      
-      val=re.split('@+',args.package)
+      val=[]
+      if args.package!=None:
+        val=re.split('@+',args.package)
       if len(val)==0:
         try:
           files=listdir(PVSLMREP)
