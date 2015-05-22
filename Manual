@@ -1,12 +1,17 @@
 PVS Library Manager
-by Miguel Romero
+	by Miguel Romero
 
-PVS structure (decreasing)
-Library
-Package
-Theory
+Requirements:
+	curl
+	PVS
+	enviroment variable PVS_PATH
 
-Library manage
+PVS structure (decreasing):
+	Library
+	Package
+	Theory
+
+Library manage:
 	pvslm.py src name description url
 	The library manage is based on two parts. 
 	The first one are the sources, those are the files with the library information 
@@ -36,7 +41,7 @@ Library manage
 		Remove the repository.
 		
 
-Package manage
+Package manage:
 	pvslm.py pkg library@package
 	
 	Install
