@@ -1,0 +1,60 @@
+PVS Library Manager
+by Miguel Romero
+
+PVS structure (decreasing)
+Library
+Package
+Theory
+
+Library manage
+	pvslm.py src name description url
+	The library manage is based on two parts. 
+	The first one are the sources, those are the files with the library information 
+	(name, description and URL).
+	The second one are the repositories, those are copies (clones) of the 
+	git repositories of a library.
+	
+	Add source
+	pvslm.py src -a name description url
+		Create a new .list file with the library information.
+
+	Delete source	
+	pvslm.py src -d name
+		Delete the library .list file.
+
+	Create repository
+	pvslm.py src -c name
+		Create the library repository based on the source with the same name. 
+		The creation is a clone of the git repository.
+
+	Update repository
+	pvslm.py src -u name
+		Update the library using a pull command.
+
+	Remove repository
+	pvslm.py src -r name
+		Remove the repository.
+		
+
+Package manage
+	pvslm.py pkg library@package
+	
+	Install
+	pvslm.py pkg -i library@package
+		Install and update the package and all its dependencies.
+
+	Update
+	pvslm.py pkg -u library@package
+		Update an installed package and all its dependencies.
+
+	Delete
+	pvslm.py pkg -d library@package 
+		Delete an installed package with all the other ones that depends on it.
+
+	List
+	pvslm.py pkg -l
+		List all the installed libraries.
+	pvslm.py pkg -l library
+		List all the available packages of the library.
+	pvslm.py pkg -l library@package
+		List all the dependecies of the package.
