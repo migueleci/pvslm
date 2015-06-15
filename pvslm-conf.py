@@ -91,12 +91,6 @@ try:
   
   copy=subprocess.Popen('chmod +x '+confPath+'/pvslm.py',shell=True)
   copy.communicate()[0]
-    
-  delete=subprocess.Popen('rm -rf ~/pvslm.py',shell=True)
-  delete.communicate()[0]
-
-  link=subprocess.Popen('ln -s '+confPath+'/pvslm.py ~/',shell=True)
-  link.communicate()[0]
 
   if confPath!=PVSPATH:
     link=subprocess.Popen('ln -s '+confPath+'/pvslm.py '+PVSPATH+'/',shell=True)
@@ -124,8 +118,8 @@ try:
   delete=subprocess.Popen('rm -rf pvslm-install',shell=True)
   delete.communicate()[0]
   
-  #delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
-  #delete.communicate()[0]
+  delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
+  delete.communicate()[0]
 
   delete=subprocess.Popen('rm -rf nasalib.list',shell=True)
   delete.communicate()[0]
