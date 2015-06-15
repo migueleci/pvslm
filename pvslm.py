@@ -129,8 +129,6 @@ def main():
           print "Something went wrong. Please check the arguments and try again"
       else:
         print "Please include the description and url"
-    elif args.modify:
-      print 'Under development.'
     elif args.delete:
       name=args.name
       try:
