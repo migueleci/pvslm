@@ -92,9 +92,12 @@ try:
   copy=subprocess.Popen('chmod +x '+confPath+'/pvslm.py',shell=True)
   copy.communicate()[0]
   
+  link=subprocess.Popen('ln -s '+confPath+'/pvslm.py ~/',shell=True)
+  link.communicate()[0]
+
   if confPath!=PVSPATH:
-    copy=subprocess.Popen('ln -s '+confPath+'/pvslm.py '+PVSPATH+'/',shell=True)
-    copy.communicate()[0]
+    link=subprocess.Popen('ln -s '+confPath+'/pvslm.py '+PVSPATH+'/',shell=True)
+    link.communicate()[0]
 
   copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/nasalib.list -o nasalib.list',shell=True)
   copy.communicate()[0]
