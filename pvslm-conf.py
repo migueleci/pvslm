@@ -110,7 +110,8 @@ try:
   copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/install-scripts '+PVSPATH+'/nasalib/',shell=True)
   copy.communicate()[0]
   
-  install=subprocess.Popen('./'+PVSPATH+'nasalib/install-scripts',shell=True)
+  os.chdir(PVSPATH+'nasalib/')
+  install=subprocess.Popen('./install-scripts',shell=True)
   install.communicate()[0]
   
   delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
