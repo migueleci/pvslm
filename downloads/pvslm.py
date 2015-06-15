@@ -98,9 +98,9 @@ def main():
   pkg.add_argument("-i", "--install", action="store_true", help="Install a package and all its dependecies")
   pkg.add_argument("-u", "--update", action="store_true", help="Update a package and all its dependecies")
   pkg.add_argument("-d", "--delete", action="store_true", help="Delete a package")
-  pkg.add_argument("-l", "--list", action="store_true", help="nargs = List available libraries\nlibrary = list all its packages\nlibrary@package = list all dependencies of the package")
+  pkg.add_argument("-l", "--list", action="store_true", help="nargs = List available libraries\n, library = list all its packages\n, library@package = list all dependencies of the package")
   # Positional arguments
-  pkg.add_argument("library@package", type=str, help="name of the package and its library",nargs='?') # Optional
+  pkg.add_argument("package", type=str, help="format = library@package. Name of the package and its library",nargs='?') # Optional
   
   global listed
   
