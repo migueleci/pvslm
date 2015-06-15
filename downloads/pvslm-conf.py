@@ -124,8 +124,8 @@ try:
   delete=subprocess.Popen('rm -rf pvslm-install',shell=True)
   delete.communicate()[0]
   
-  delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
-  delete.communicate()[0]
+  #delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
+  #delete.communicate()[0]
 
   delete=subprocess.Popen('rm -rf nasalib.list',shell=True)
   delete.communicate()[0]
