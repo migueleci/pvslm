@@ -117,6 +117,7 @@ try:
   copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/install-scripts '+PVSPATH+'/nasalib/',shell=True)
   copy.communicate()[0]
   
+  os.chdir(PVSPATH+'/nasalib')
   install=subprocess.Popen('sh '+PVSPATH+'/nasalib/install-scripts',shell=True)
   install.communicate()[0]
   
