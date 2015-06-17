@@ -20,6 +20,9 @@ if PVSPATH==None:
   print "PVS is not installed, please install and configure it first"
   sys.exit()
 
+if PVSPATH[-1]=='/':
+  PVSPATH=PVSPATH[0:-1]
+
 global repoPath
 global confPath
 global srcPath
@@ -44,6 +47,9 @@ def pathAssing(name,default):
   return path
 
 confPath=pathAssing('library manager installation path',DEFAULT_INSTALL_DIR)
+
+if confPath[-1]=='/':
+  confPath=confPath[0:-1]
 
 srcPath=confPath+'/.pvslm/reposrc' 
 replace=subprocess.Popen('mkdir -p '+srcPath,shell=True)
@@ -91,9 +97,10 @@ try:
   
   copy=subprocess.Popen('chmod +x '+confPath+'/pvslm.py',shell=True)
   copy.communicate()[0]
-  
-  copy=subprocess.Popen('ln -s '+confPath+'/pvslm.py '+PVSPATH+'/',shell=True)
-  copy.communicate()[0]
+
+  if confPath!=PVSPATH:
+    link=subprocess.Popen('ln -s '+confPath+'/pvslm.py '+PVSPATH+'/',shell=True)
+    link.communicate()[0]
 
   copy=subprocess.Popen('curl http://migueleci.github.io/pvslm/downloads/nasalib.list -o nasalib.list',shell=True)
   copy.communicate()[0]
@@ -110,12 +117,16 @@ try:
   copy=subprocess.Popen('rsync -azh '+repoPath+'/nasalib/install-scripts '+PVSPATH+'/nasalib/',shell=True)
   copy.communicate()[0]
   
-  delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
-  delete.communicate()[0]
+  os.chdir(PVSPATH+'/nasalib')
+  install=subprocess.Popen('sh '+PVSPATH+'/nasalib/install-scripts',shell=True)
+  install.communicate()[0]
   
   delete=subprocess.Popen('rm -rf pvslm-install',shell=True)
   delete.communicate()[0]
   
+  delete=subprocess.Popen('rm -rf pvslm.py',shell=True)
+  delete.communicate()[0]
+
   delete=subprocess.Popen('rm -rf nasalib.list',shell=True)
   delete.communicate()[0]
   

@@ -23,31 +23,29 @@ global listed
 def listdep(name, pkgs, pkgs_name):
   if(name in pkgs_name):
     src=open(pkgs[pkgs_name.index(name)]+'/pvsbin/top.dep')
-    line_dep=src.readline()
-    line_dep=src.readline()
-    while(line_dep.find("/")!=-1):
-      pack=line_dep[0:line_dep.find("/")]
-      if (pack not in listed):
-        if(pack in pkgs_name):
-          listed.append(pack)
-        listdep(pack,pkgs,pkgs_name)      
-      line_dep=src.readline()
+    for line_dep in src.readlines():
+      if line_dep.find("/")>0:
+        pack=line_dep[0:line_dep.find("/")]
+        if (pack not in listed):
+          if(pack in pkgs_name):
+            listed.append(pack)
+          listdep(pack,pkgs,pkgs_name)
+        line_dep=src.readline()
 
 def listAlldep(name, pkgs, pkgs_name):
   pend_pkg=[val for val in pkgs_name if val not in listed]
   for p in pend_pkg:
     src=open(pkgs[pkgs_name.index(p)]+'/pvsbin/top.dep')
-    line_dep=src.readline()
-    line_dep=src.readline()
-    finded=False
-    while(line_dep.find("/")!=-1 and not finded):
-      pack=line_dep[0:line_dep.find("/")]
-      if (pack in listed):
-          listed.append(p)
-          finded=True
-          listAlldep(p, pkgs, pkgs_name)      
-      line_dep=src.readline()
-
+    for line_dep in src.readlines():
+      finded=False
+      if line_dep.find("/")>0 and not finded:
+        pack=line_dep[0:line_dep.find("/")]
+        if (pack in listed):
+            listed.append(p)
+            finded=True
+            listAlldep(p, pkgs, pkgs_name)
+        line_dep=src.readline()
+  
 def update_library(name):
   try:
     files=listdir(PVSLMSRC)
@@ -85,7 +83,6 @@ def main():
   src = subparsers.add_parser('src', help='Source manager help')
   # Optional arguments
   src.add_argument("-a", "--add", action="store_true", help="Add a new source")
-  src.add_argument("-m", "--modify", action="store_true", help="Modify an existing source")
   src.add_argument("-d", "--delete", action="store_true", help="Delete an existing source")
   src.add_argument("-c", "--create", action="store_true", help="Create a new repository")
   src.add_argument("-u", "--update", action="store_true", help="Update an existing repository")
@@ -101,9 +98,9 @@ def main():
   pkg.add_argument("-i", "--install", action="store_true", help="Install a package and all its dependecies")
   pkg.add_argument("-u", "--update", action="store_true", help="Update a package and all its dependecies")
   pkg.add_argument("-d", "--delete", action="store_true", help="Delete a package")
-  pkg.add_argument("-l", "--list", action="store_true", help="List all the dependencies for a package")
+  pkg.add_argument("-l", "--list", action="store_true", help="nargs = List available libraries\n, library = list all its packages\n, library@package = list all dependencies of the package")
   # Positional arguments
-  pkg.add_argument("package", type=str, help="Name of the package",nargs='?') # Optional
+  pkg.add_argument("package", type=str, help="format = library@package. Name of the package and its library",nargs='?') # Optional
   
   global listed
   
@@ -132,8 +129,6 @@ def main():
           print "Something went wrong. Please check the arguments and try again"
       else:
         print "Please include the description and url"
-    elif args.modify:
-      print 'Under development.'
     elif args.delete:
       name=args.name
       try:
