@@ -50,6 +50,12 @@
 										<pre><code><br>curl http://migueleci.github.io/pvslm/downloads/pvslm-conf.py -o pvslm-install && chmod +x pvslm-install && python ./pvslm-install<br><br></code></pre><br>
 										<p align="justify">This command uses the <b>curl</b> utility to download the <b>pvslm</b> installation sources from GitHub. Once these sources are downloaded and some file permissions adjusted, the installation process is executed as a Python 2 script. During the installation process, the user can select the location in which the tool is to be installed, including where the configuration files for the library sources and the local copy of the libraries are to be placed. This script has been tested both on Linux and Mac OS X boxes.</p>
 										<p align="justify">Upon its successful installation, <b>pvslm</b> automatically configures the NASALib library sources and makes a local copy of them by using Git's clone command, so they are available for installation in PVS.</p>
+										<h3>Requirements</h3>
+										<ul style="list-style-type:none"  align="justify">
+										  <li>- <b>curl</b></li>
+										  <li>- <b>PVS</b></li>
+										  <li>- enviroment variable <b>PVS_PATH</b></li>
+										</ul>
 									</section>
 								</div>
 							</section>
