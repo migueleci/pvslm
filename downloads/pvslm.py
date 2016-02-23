@@ -7,11 +7,13 @@ import re
 import os
 from os import listdir
 
+# Paths
 PVSPATH='pvsPath'
 PVSLM='pvslmPath'
 PVSLMSRC='pvslmSrc'
 PVSLMREP='pvslmRep'
 
+# Argument Parser
 class PVSLMParser(argparse.ArgumentParser):
   def error(self, message):
     sys.stderr.write('error: %s\n\n' % message)
@@ -20,6 +22,7 @@ class PVSLMParser(argparse.ArgumentParser):
 
 global listed
 
+# List dependencies for a package
 def listdep(name, pkgs, pkgs_name):
   if(name in pkgs_name):
     src=open(pkgs[pkgs_name.index(name)]+'/pvsbin/top.dep')
@@ -45,7 +48,8 @@ def listAlldep(name, pkgs, pkgs_name):
             finded=True
             listAlldep(p, pkgs, pkgs_name)
         line_dep=src.readline()
-  
+
+# Update a library, excecuting a pull command of its git repository  
 def update_library(name):
   try:
     files=listdir(PVSLMSRC)
@@ -81,7 +85,7 @@ def main():
   
   # Create parser for the sources
   src = subparsers.add_parser('src', help='Source manager help')
-  # Optional arguments
+  # Define optional arguments (Commands) for the source management
   src.add_argument("-a", "--add", action="store_true", help="Add a new source")
   src.add_argument("-d", "--delete", action="store_true", help="Delete an existing source")
   src.add_argument("-c", "--create", action="store_true", help="Create a new repository")
@@ -94,7 +98,7 @@ def main():
   
   # Create parser for the packages
   pkg = subparsers.add_parser('pkg', help='Package manager help')
-  # Optional arguments
+  # Define optional arguments (Commands) for the package management
   pkg.add_argument("-i", "--install", action="store_true", help="Install a package and all its dependecies")
   pkg.add_argument("-u", "--update", action="store_true", help="Update a package and all its dependecies")
   pkg.add_argument("-d", "--delete", action="store_true", help="Delete a package")
@@ -102,11 +106,15 @@ def main():
   # Positional arguments
   pkg.add_argument("package", type=str, help="format = library@package. Name of the package and its library",nargs='?') # Optional
   
+  # list of packages
   global listed
   
+  # Use the parser to excecute the commands
   args = parser.parse_args()
+  # Source Management
   if args.subparser_name=='src':
     if args.add:
+      # Add a source
       if args.description!=None and args.url!=None:
         name=args.name
         desc=args.description
@@ -130,6 +138,7 @@ def main():
       else:
         print "Please include the description and url"
     elif args.delete:
+      # Delete a source
       name=args.name
       try:
         files=listdir(PVSLMSRC)
@@ -146,6 +155,7 @@ def main():
       except:
         print "Something went wrong. Please check the arguments and try again"
     elif args.create:
+      # Create the source, excecute a pull command from its git repository
       name=args.name
       try:
         files=listdir(PVSLMSRC)
@@ -173,6 +183,7 @@ def main():
       except:
         print "Something went wrong. Please check the arguments and try again"
     elif args.update:
+      # Update the source
       name=args.name
       update_library(name)
     elif args.remove:
@@ -192,7 +203,9 @@ def main():
       except:
         print "Something went wrong. Please check the arguments and try again"
   else :
+    # Package Management
     if args.install:      
+      # Install the package, and all its dependencies, based on the library source version
       val=[]
       if args.package!=None:
         val=re.split('@+',args.package)
@@ -222,7 +235,7 @@ def main():
               print '\n'.join(str(p) for p in listed)
             else:
               print "The package "+fpackage+" has no dependencies"
-            apr=raw_input('Would you like to install the package(s) (Y/N): ')
+            apr=raw_input('Would you like to install the package(s) (Y/n): ')
             if apr=='Y' or apr=='y':
               if(not os.path.isdir(PVSLM+'/'+flibrary)):
                 create=subprocess.Popen('mkdir -p '+PVSPATH+'/'+flibrary,shell=True)
@@ -239,6 +252,7 @@ def main():
       except:
         print "Something went wrong. Please check the arguments and try again"
     elif args.update:
+      # Update the package, and all its dependencies
       val=[]
       if args.package!=None:
         val=re.split('@+',args.package)
@@ -286,6 +300,7 @@ def main():
       except:
         print "Something went wrong. Please check the arguments and try again"
     elif args.delete:
+      # Remove the package, and all the packages that depend on it
       val=[]
       if args.package!=None:
         val=re.split('@+',args.package)
@@ -315,7 +330,7 @@ def main():
               print '\n'.join(str(p) for p in listed)
             else:
               print "The package "+fpackage+" has no dependencies"
-            apr=raw_input('Would you like to remove the package(s) (Y/N): ')
+            apr=raw_input('Would you like to remove the package(s) (Y/n): ')
             if apr=='Y' or apr=='y':
               listed.append(fpackage)
               for l in listed:
@@ -329,10 +344,12 @@ def main():
       except:
         print "Something went wrong. Please check the arguments and try again"
     elif args.list:      
+      # List function
       val=[]
       if args.package!=None:
         val=re.split('@+',args.package)
       if len(val)==0:
+        # List all the libraries configured in the tool, i.e. all the source created 
         try:
           files=listdir(PVSLMREP)
           repos =[]
@@ -344,6 +361,7 @@ def main():
         except:
           print "Something went wrong. Please check the arguments and try again"
       elif len(val)==1:
+        # List all the packages of the library
         flibrary=val[0]
         try:
           lpath=PVSLMREP+'/'+flibrary
@@ -362,6 +380,7 @@ def main():
         except:
           print "Something went wrong. Please check the arguments and try again"
       elif len(val)==2:
+        # List all the dependencies of the package within the library
         fpackage=val[1]
         flibrary=val[0]
         try:
