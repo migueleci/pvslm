@@ -235,7 +235,7 @@ def main():
               print '\n'.join(str(p) for p in listed)
             else:
               print "The package "+fpackage+" has no dependencies"
-            apr=raw_input('Would you like to install the package(s) (Y/n): ')
+            apr=raw_input('Would you like to install the package(s) (y/N): ')
             if apr=='Y' or apr=='y':
               if(not os.path.isdir(PVSLM+'/'+flibrary)):
                 create=subprocess.Popen('mkdir -p '+PVSPATH+'/'+flibrary,shell=True)
@@ -283,7 +283,7 @@ def main():
               print '\n'.join(str(p) for p in listed)
             else:
               print "The package "+fpackage+" has no dependencies"
-            apr=raw_input('Would you like to update the package(s) (Y/N): ')
+            apr=raw_input('Would you like to update the package(s) (y/N): ')
             if apr=='Y' or apr=='y':
               if(not os.path.isdir(PVSLM+'/'+flibrary)):
                 create=subprocess.Popen('mkdir -p '+lpath,shell=True)
@@ -330,7 +330,7 @@ def main():
               print '\n'.join(str(p) for p in listed)
             else:
               print "The package "+fpackage+" has no dependencies"
-            apr=raw_input('Would you like to remove the package(s) (Y/n): ')
+            apr=raw_input('Would you like to remove the package(s) (y/N): ')
             if apr=='Y' or apr=='y':
               listed.append(fpackage)
               for l in listed:
